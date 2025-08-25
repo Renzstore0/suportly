@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rishe Request Form</title>
+<style>
+/* === CSS sama persis dengan versi kamu === */
+:root {
+  --bg: #f5f5f5;
+  --text: #222;
+  --container-bg: #fff;
+  --button-bg: #4CAF50;
+  --button-hover: #45a049;
+  --input-border: #ccc;
+  --card-bg: #fafafa;
+  --card-border: #ddd;
+  --overlay-bg: rgba(0,0,0,0.85);
+  --notif-bg: #4CAF50;
+}
+body.dark {
+  --bg: #121212;
+  --text: #f0f0f0;
+  --container-bg: #1e1e1e;
+  --button-bg: #1db954;
+  --button-hover: #159943;
+  --input-border: #333;
+  --card-bg: #1a1a1a;
+  --card-border: #333;
+  --overlay-bg: rgba(0,0,0,0.95);
+  --notif-bg: #1db954;
+}
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); transition: all 0.3s ease; user-select: none;}
+.container { max-width: 100%; margin: 40px auto; background: var(--container-bg); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; }
+.header-controls { display: flex; justify-content: space-between; width: 100%; margin-bottom: 15px; }
+.header-controls button { width: 35px; height: 35px; border-radius: 50%; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+.mode-btn { background-color: #ccc; color: #333; } .mode-btn:hover { background-color: #aaa; }
+.list-btn { background-color: #ccc; color: white; } .list-btn:hover { background-color: #aaa; }
+.logo { width: 80px; height: 80px; margin-bottom: 10px; }
+h2 { text-align: center; margin-bottom: 15px; font-size: 18px; }
+label { display: block; margin-top: 12px; font-weight: bold; font-size: 14px; }
+input, select, textarea, button { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid var(--input-border); border-radius: 5px; font-size: 14px; background: transparent; color: var(--text); transition: all 0.3s ease; }
+textarea { resize: vertical; }
+button { background-color: var(--button-bg); color: white; border: none; cursor: pointer; margin-top: 15px; padding: 10px; }
+button:hover { background-color: var(--button-hover); }
+.social { margin-top: 20px; text-align: center; }
+.social-icons { display: flex; justify-content: center; gap: 15px; margin-top: 8px; }
+.icon-container { text-align: center; font-size: 12px; color: var(--text); }
+.icon-container img { width: 18px; height: 18px; margin: 0 auto 3px; }
+.icon-name { font-size: 11px; }
+#overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--overlay-bg); display: none; flex-direction: column; padding: 15px; overflow-y: auto; z-index: 1000; }
+#overlay h3 { color: white; text-align: center; margin-bottom: 10px; font-size: 18px; }
+#overlay input, #overlay select { padding: 6px; margin-bottom: 8px; border-radius: 5px; border: 1px solid var(--card-border); font-size: 14px; background: var(--card-bg); color: var(--text);}
+#overlay .request-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 12px 15px; margin-bottom: 12px; color: var(--text);}
+#overlay .request-card h4 { margin:0 0 4px 0; font-size:15px; }
+#overlay .request-card .type { font-weight: bold; color: var(--button-bg); margin-right: 6px; }
+#overlay .request-card .date { font-size: 11px; color: gray; }
+#overlay .request-card p { margin: 8px 0 0 0; white-space: pre-wrap; }
+#notif { position: fixed; top: -80px; left: 50%; transform: translateX(-50%); background: var(--notif-bg); color: white; padding: 12px 25px; border-radius: 8px; font-weight: bold; opacity: 0; pointer-events: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.6s cubic-bezier(0.68,-0.55,0.27,1.55); z-index: 2000; font-size: 14px; }
+#notif.show { opacity: 1; top: 20px; }
+
+.copyright {
+  font-size: 12px;
+  color: gray;
+  margin-top: 30px;
+  padding-top: 5px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div id="notif">Berhasil Dikirim!</div>
+
+<div class="container">
+  <div class="header-controls">
+    <button class="list-btn" onclick="toggleOverlay()">👁️</button>
+    <button class="mode-btn" id="modeBtn" onclick="toggleMode()">🌙</button>
+  </div>
+  <img src="https://pomf2.lain.la/f/4pffpbjl.png" alt="Logo Rishe" class="logo">
+  <h2>Form Request / Report - Rishe</h2>
+  <form id="form">
+    <label for="name">Nama Anda</label>
+    <input type="text" id="name" name="name" required>
+    <label for="type">Jenis Permintaan</label>
+    <select name="type" id="type" required>
+      <option value="">-- Pilih --</option>
+      <option value="Request">Request</option>
+      <option value="Report">Report</option>
+    </select>
+    <label for="message">Pesan</label>
+    <textarea id="message" name="message" rows="5" required></textarea>
+    <button type="submit">Kirim Form</button>
+  </form>
+  <div class="social">
+    <p>Ikuti kami di:</p>
+    <div class="social-icons">
+      <a href="https://whatsapp.com/channel/0029Vb5u14XCXC3Jtx1enO2Z" target="_blank">
+        <div class="icon-container">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+          <div class="icon-name">WhatsApp</div>
+        </div>
+      </a>
+      <a href="https://www.instagram.com/rasyd.hmd" target="_blank">
+        <div class="icon-container">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+          <div class="icon-name">Instagram</div>
+        </div>
+      </a>
+      <a href="https://www.tiktok.com/@rsyy1610" target="_blank">
+        <div class="icon-container">
+          <img src="https://cdn-icons-png.flaticon.com/512/3046/3046120.png">
+          <div class="icon-name">TikTok</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <p class="copyright">© 2025 by Renz. All rights reserved.</p>
+</div>
+
+<div id="overlay">
+  <h3>Daftar Request / Report</h3>
+  <input type="text" id="search" placeholder="Cari..." oninput="renderRequests()">
+  <select id="filter" onchange="renderRequests()">
+    <option value="all">Semua</option>
+    <option value="Request">Request</option>
+    <option value="Report">Report</option>
+  </select>
+  <div id="list"></div>
+  <button onclick="toggleOverlay()" style="margin-top:10px;padding:8px;border:none;border-radius:5px;background:#f44336;color:white;cursor:pointer;">Tutup</button>
+</div>
+
+<!-- Supabase JS -->
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
+<script>
+const SUPABASE_URL = "https://betplbblsasbggwnsjwd.supabase.co"; // ganti dengan URL project kamu
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldHBsYmJsc2FzYmdnd25zandkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDIsImV4cCI6MjA3MTY5NjcwMn0.ZIXDJWAei9EWu7-sTjkG_miyO_DkqgpS7h1sPlFBTXk"; // ganti dengan anon key dari Supabase
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let pollTimer = null;
+
+function toggleMode(){
+  const body=document.body; const btn=document.getElementById('modeBtn');
+  body.classList.toggle('dark');
+  btn.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
+}
+function toggleOverlay(){
+  const overlay=document.getElementById('overlay');
+  const opening = overlay.style.display!=='flex';
+  overlay.style.display = opening?'flex':'none';
+  if(opening){ renderRequests(); clearInterval(pollTimer); pollTimer=setInterval(renderRequests,5000); }
+  else clearInterval(pollTimer);
+}
+function showNotif(msg='Berhasil Dikirim!'){
+  const notif=document.getElementById('notif');
+  notif.textContent=msg; notif.classList.add('show');
+  setTimeout(()=>notif.classList.remove('show'),3000);
+}
+document.getElementById('form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=document.getElementById('name').value.trim();
+  const type=document.getElementById('type').value;
+  const message=document.getElementById('message').value.trim();
+  if(!name||!type||!message) return;
+  const blacklist=['pornhub.com','xvideos.com','xnxx.com','xhamster.com','onlyfans.com','redtube.com','youjizz.com','youporn.com','camwhores.com','hentai.com','rule34.com','sex.com','videy.co','doujindesu.tv'];
+  if(blacklist.some(k=>message.toLowerCase().includes(k))) return;
+  try{
+    let {error}=await supabase.from('requests').insert([{name,type,message}]);
+    if(error) return showNotif('Gagal kirim');
+    document.getElementById('form').reset();
+    showNotif('Berhasil Dikirim!');
+    renderRequests();
+  }catch(err){ showNotif('Error: '+err.message); }
+});
+async function renderRequests(){
+  const listEl=document.getElementById('list');
+  const search=document.getElementById('search').value.toLowerCase();
+  const filter=document.getElementById('filter').value;
+  listEl.innerHTML='<div style="color:#fff;opacity:.8;text-align:center">Memuat...</div>';
+  try{
+    let {data,error}=await supabase.from('requests').select('*').order('created_at',{ascending:false});
+    if(error) throw error;
+    listEl.innerHTML='';
+    data.filter(r=>{
+      const s=(r.name||'').toLowerCase().includes(search)||(r.message||'').toLowerCase().includes(search);
+      const f=filter==='all'||r.type===filter;
+      return s&&f;
+    }).forEach(r=>{
+      const card=document.createElement('div'); card.className='request-card';
+      const tanggal=new Date(r.created_at).toLocaleString('id-ID');
+      card.innerHTML=`<h4><span class="type">${r.type}</span> dari <em>${escapeHtml(r.name)}</em> <span class="date">[${tanggal}]</span></h4><p>${escapeHtml(r.message)}</p>`;
+      listEl.appendChild(card);
+    });
+    if(!listEl.children.length) listEl.innerHTML='<div class="request-card">Belum ada data.</div>';
+  }catch(e){ listEl.innerHTML='<div class="request-card">Gagal memuat data.</div>'; }
+}
+document.addEventListener('contextmenu',e=>{ if(!e.target.closest('form')) e.preventDefault(); });
+function escapeHtml(str=''){ return str.replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
+</script>
+</body>
+</html>
