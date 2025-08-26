@@ -133,37 +133,40 @@ button:hover { background-color: var(--button-hover); }
 <!-- Supabase JS -->
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
 <script>
-const SUPABASE_URL = "https://betplbblsasbggwnsjwd.supabase.co"; // ganti dengan URL project kamu
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldHBsYmJsc2FzYmdnd25zandkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMjA3MDIsImV4cCI6MjA3MTY5NjcwMn0.ZIXDJWAei9EWu7-sTjkG_miyO_DkqgpS7h1sPlFBTXk"; // ganti dengan anon key dari Supabase
+const SUPABASE_URL = "https://betplbblsasbggwnsjwd.supabase.co"; 
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...."; 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let pollTimer = null;
 
-function toggleMode(){
-  const body=document.body; const btn=document.getElementById('modeBtn');
-  body.classList.toggle('dark');
-  btn.textContent = body.classList.contains('dark') ? '☀️' : '🌙';
-}
-function toggleOverlay(){
-  const overlay=document.getElementById('overlay');
-  const opening = overlay.style.display!=='flex';
-  overlay.style.display = opening?'flex':'none';
-  if(opening){ renderRequests(); clearInterval(pollTimer); pollTimer=setInterval(renderRequests,5000); }
-  else clearInterval(pollTimer);
-}
-function showNotif(msg='Berhasil Dikirim!'){
-  const notif=document.getElementById('notif');
-  notif.textContent=msg; notif.classList.add('show');
-  setTimeout(()=>notif.classList.remove('show'),3000);
-}
+// regex blacklist kata kasar
+const blacklist = /\b(anjing|anjg|ajg|njg|njing|anjr|anjir|jing|jng|anjeng|anjay|kontol|kntl|kontl|kntrl|ktl|k0nt0l|k0ntl|kontoI|kntI|kontI|kntrI|ktI|k0nt0I|konto1|knt1|kont1|kntr1|kt1|k0nt01|dick|d1ck|dlck|memek|mpk|mpek|mpeq|mpq|memk|mmk|pepek|ppek|pepq|ppk|peler|pler|plr|pukimak|pkmk|pkimak|kmk|lonte|lnte|lonty|lont|l0nte|lc|poyok|pyk|p0y0k|p0yok|poy0k|tobrut|tbrt|tobrt|tbrut|t0brt|t0brut|goblok|gblk|gblg|goblog|g0bl0k|g0blg|dongo|d0ngo|dong0|d0ng0|tolol|tlol|tll|tolll|t0l0l|jancuk|jncuk|jancok|jnck|janc|kampang|kampng|kpang|pantat|pntt|pant|kampret|kmprt|kmpret|kamp*ret|sange|sng|sang3|sangee|sangq|pelacur|plcr|pelakur|pl4cur|ngewe|ngewek|ngeweq|ngewew|ngentot|ngntot|ngntt|ng3nt0t|ngentod|sex|s3x|sexy|s3xy|j3mbut|jembut|jmbt|jmbut|puki|pk|pooki|coli|cli|c0li|col1|c0l1|ngock|ngocok|ng0cok|ngoco0k|ngck|kolot|klot|hama|hma|hamil|hml|hamiil|bokep|bokp|bkep|bkp|boqep|bokepp|bokeb|bok3p|4su|asu|asuu|hytam|niga|n1ga|nlga|nig4|n1g4|nlg4|bandar|b4ndar|band4r|b4nd4ar|judi|jud1|judl|judol|jud0l|admin|atmin|4dm1n|jomok|jmk|j0mok|jom0k|jomk|j0mk|jm0k|j0m0k)\b/gi;
+
+// blacklist situs dewasa
+const siteBlacklist = [
+  'pornhub.com','xvideos.com','xnxx.com','xhamster.com','onlyfans.com',
+  'redtube.com','youjizz.com','youporn.com','camwhores.com','hentai.com',
+  'rule34.com','sex.com','videy.co','doujindesu.tv'
+];
+
 document.getElementById('form').addEventListener('submit',async e=>{
   e.preventDefault();
   const name=document.getElementById('name').value.trim();
   const type=document.getElementById('type').value;
   const message=document.getElementById('message').value.trim();
   if(!name||!type||!message) return;
-  const blacklist=['pornhub.com','xvideos.com','xnxx.com','xhamster.com','onlyfans.com','redtube.com','youjizz.com','youporn.com','camwhores.com','hentai.com','rule34.com','sex.com','videy.co','doujindesu.tv'];
-  if(blacklist.some(k=>message.toLowerCase().includes(k))) return;
+
+  // cek kata kasar
+  if(blacklist.test(message) || blacklist.test(name)){
+    showNotif('Pesan mengandung kata terlarang!');
+    return;
+  }
+  // cek situs blacklist
+  if(siteBlacklist.some(k=>message.toLowerCase().includes(k))){
+    showNotif('Pesan mengandung link terlarang!');
+    return;
+  }
+
   try{
     let {error}=await supabase.from('requests').insert([{name,type,message}]);
     if(error) return showNotif('Gagal kirim');
